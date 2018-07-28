@@ -1,20 +1,29 @@
 import {
   FETCHING_DATA,
   FETCHING_DATA_SUCCESS,
-  FETCHING_DATA_FAILURE
+  FETCHING_DATA_FAILURE,
+
+  // FILTER
+  FILTER_MOVIES_BY_GENRES
 } from "./constants";
 
 export const getData = () => ({
   type: FETCHING_DATA
 });
 
-export const getDataSuccess = data => ({
+export const getDataSuccess = (genres, movies) => ({
   type: FETCHING_DATA_SUCCESS,
-  data
+  genres: genres.genres,
+  movies: movies.results
 });
 
 export const getDataFailure = () => ({
   type: FETCHING_DATA_FAILURE
+});
+
+export const filterMovieByGenre = genreId => ({
+  type: FILTER_MOVIES_BY_GENRES,
+  genreId
 });
 
 // AJAX API > SHOUL BE STORED IN DEFF FOLDER BUT FOR NO IT"S OK HAVE IT HERE
@@ -40,8 +49,7 @@ export const fetchData = () => {
         fetchGenresInParallel(),
         fetchMovieInParallel()
       ]);
-
-      dispatch(getDataSuccess({ genres, movies }));
+      dispatch(getDataSuccess(genres, movies));
     } catch (error) {
       dispatch(getDataFailure());
     }
