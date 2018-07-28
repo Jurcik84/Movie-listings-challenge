@@ -1,23 +1,58 @@
-import React from "react";
+import React, { Component } from "react";
 import { connect } from "react-redux";
 
 // ACTION CREATORS
 import { fetchData } from "./actions";
 
-function App(props) {
-  return (
-    <div className="App">
-      <h1>Hello CodeSandbox</h1>
-      <button onClick={() => props.fetchData()}>LAOD DATA</button>
-      <section />
-    </div>
-  );
+class App extends Component {
+  state = {};
+  componentDidMount() {
+    this.props.fetchData();
+  }
+
+  renderMovies = movies => {
+    return (
+      <section>
+        <ul>
+          {movies.map((movieItem, movieIndex) => (
+            <li key={movieIndex.toString()}>
+              <div>
+                <img
+                  src={
+                    "https://image.tmdb.org/t/p/w200/" + movieItem.poster_path
+                  }
+                  alt=""
+                />
+              </div>
+              <h2>{movieItem.original_title}</h2>
+            </li>
+          ))}
+        </ul>
+      </section>
+    );
+  };
+
+  renderLoader = () => <div>a</div>;
+
+  render() {
+    const { movies } = this.props;
+    console.log("movies", movies);
+    if (movies) {
+      return this.renderMovies(movies);
+    } else {
+      return this.renderLoader();
+    }
+  }
 }
 
 const mapStateToProps = state => {
-  console.log(state);
+  const { data } = state.appData;
+
+  console.log("data", data);
+
   return {
-    appData: state.appData
+    movies: data.movies ? data.movies.results : [],
+    genres: data.genres ? data.genres.genres : []
   };
 };
 
