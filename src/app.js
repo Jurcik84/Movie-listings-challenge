@@ -25,6 +25,7 @@ class App extends Component {
                 />
               </div>
               <h2>{movieItem.original_title}</h2>
+              <p>{movieItem.genre_ids.join()}</p>
             </li>
           ))}
         </ul>
@@ -45,14 +46,31 @@ class App extends Component {
   }
 }
 
+const helper_addGenresToMovies = (movies, genres) => {
+  if (movies && movies.length > 0) {
+    return movies.map(mItem => {
+      return {
+        ...mItem,
+        genre_ids: mItem.genre_ids.map(id => {
+          return genres.filter(gItem => {
+            return id === gItem.id;
+          })[0];
+        })
+      };
+    });
+  }
+};
+
 const mapStateToProps = state => {
   const { data } = state.appData;
 
   console.log("data", data);
 
   return {
-    movies: data.movies ? data.movies.results : [],
-    genres: data.genres ? data.genres.genres : []
+    movies:
+      data && data.movies && data.movies.results && data.genres.genres
+        ? helper_addGenresToMovies(data.movies.results, data.genres.genres)
+        : []
   };
 };
 
