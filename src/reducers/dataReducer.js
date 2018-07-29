@@ -2,7 +2,8 @@ import {
   FETCHING_DATA,
   FETCHING_DATA_SUCCESS,
   FETCHING_DATA_FAILURE,
-  FILTER_MOVIES_BY_GENRES
+  FILTER_MOVIES_BY_GENRES,
+  FILTER_MOVIES_BY_VOTE
 } from "../constants";
 
 const initialState = {
@@ -10,9 +11,10 @@ const initialState = {
   dataFetched: false,
   isFetching: false,
   error: false,
-  genreId: null,
+  genreId: [],
   movies: [],
-  genres: []
+  genres: [],
+  vouteValue: null
 };
 
 const dataReducer = (state = initialState, action) => {
@@ -42,10 +44,15 @@ const dataReducer = (state = initialState, action) => {
       };
 
     case FILTER_MOVIES_BY_GENRES:
-      console.log("FILTER_MOVIES_BY_GENRES", action);
       return {
         ...state,
-        genreId: action.genreId
+        genreId: [...state.genreId, action.genreId]
+      };
+
+    case FILTER_MOVIES_BY_VOTE:
+      return {
+        ...state,
+        vouteValue: action.vouteValue
       };
 
     default:

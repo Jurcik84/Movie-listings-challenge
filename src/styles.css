@@ -1,4 +1,11 @@
-.App {
-  font-family: sans-serif;
-  text-align: center;
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  height: auto;
+  background-color: #f4f4f4;
+  color: #000;
+  font-family: "Source Sans Pro", Arial, sans-serif;
+  font-size: 1em;
+  -webkit-font-smoothing: antialiased;
 }

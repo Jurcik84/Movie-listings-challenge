@@ -4,7 +4,8 @@ import {
   FETCHING_DATA_FAILURE,
 
   // FILTER
-  FILTER_MOVIES_BY_GENRES
+  FILTER_MOVIES_BY_GENRES,
+  FILTER_MOVIES_BY_VOTE
 } from "./constants";
 
 export const getData = () => ({
@@ -24,6 +25,11 @@ export const getDataFailure = () => ({
 export const filterMovieByGenre = genreId => ({
   type: FILTER_MOVIES_BY_GENRES,
   genreId
+});
+
+export const filterMoviesByVote = vouteValue => ({
+  type: "FILTER_MOVIES_BY_VOTE",
+  vouteValue
 });
 
 // AJAX API > SHOUL BE STORED IN DEFF FOLDER BUT FOR NO IT"S OK HAVE IT HERE
