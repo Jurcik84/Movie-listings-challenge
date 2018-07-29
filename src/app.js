@@ -23,10 +23,6 @@ class App extends Component {
     this.props.fetchData();
   }
 
-  // renderFilterComponent = () => {
-  //   const { genres, filterMovieByGenre } = this.props;
-  // };
-
   renderFilterComponent = () => {
     const { genres, filterMovieByGenre } = this.props;
 
@@ -48,25 +44,6 @@ class App extends Component {
         })}
       </FormView>
     );
-
-    // return (
-    //   <form>
-    //     <select
-    //       multiple={false}
-    //       onChange={event => filterMovieByGenre(Number(event.target.value))}
-    //     >
-    //       <option value={null}>Reset</option>
-    //       {genres.map((genreItem, genreIndex) => {
-    //         return (
-    //           <option key={genreIndex.toString()} value={genreItem.id}>
-    //             {genreItem.name}
-    //           </option>
-    //         );
-    //       })}
-    //     </select>
-    //     <hr />
-    //   </form>
-    // );
   };
 
   renderMovies = movies => {
@@ -132,49 +109,41 @@ const helper_mapGenresArray = (arr_movies, arr_genres) => {
   }
 };
 
+const helper_filterMoviesByGenreIdFromForm = (
+  arr_all_moviesWithGenresIDsAndNames,
+  arr_genresIdsFromForm
+) => {
+  const data = arr_all_moviesWithGenresIDsAndNames.filter(({ genre_ids }) => {
+    // console.log("genre_ids", genre_ids);
+    return (
+      genre_ids.filter(num_genreIdFromMovies => {
+        // console.log("num_genreIdFromForm", num_genreIdFromForm);
+        return (
+          arr_genresIdsFromForm.filter(num_genreIDsFromForm => {
+            // console.log(
+            //   "num_genreIdFromMovies === num_genreIDsFromForm",
+            //   num_genreIdFromMovies,
+            //   num_genreIDsFromForm
+            // );
+            return num_genreIdFromMovies === num_genreIDsFromForm;
+          }).length > 0
+        );
+      }).length > 0
+    );
+  });
+
+  return data;
+};
+
 const helper_filterByGenres = (
-  { movies, genres, genreId, vouteValue },
+  { movies, genres, genreId, genreIds },
   callback
 ) => {
-  const arr_genresIdsFromForm = [...genreId];
-  const arr_all_moviesWithGenresIDsAndNames = callback(movies, genres);
-
-  const num_lastAdedGenreId = arr_genresIdsFromForm[
-    arr_genresIdsFromForm.length - 1
-  ]
-    ? arr_genresIdsFromForm[arr_genresIdsFromForm.length - 1]
-    : null;
-
-  if (arr_genresIdsFromForm.length === 0) {
-    return arr_all_moviesWithGenresIDsAndNames;
-  } else if (arr_genresIdsFromForm.length > 0) {
-    const res = arr_all_moviesWithGenresIDsAndNames.filter(({ genre_ids }) => {
-      return (
-        genre_ids.filter(({ id }) => {
-          return (
-            arr_genresIdsFromForm.filter(UI_id => {
-              return id === UI_id;
-            }).length > 0
-          );
-        }).length > 0
-      );
-    });
-
-    return res;
+  if (genreIds.length > 0) {
+    return helper_filterMoviesByGenreIdFromForm(movies, genreIds);
   }
 
-  // switch (true) {
-  //   case genreId === undefined || genreId === null:
-  //     return callback(movies, genres);
-
-  //   default:
-  //   // const _movies = movies.filter(
-  //   //   ({ genre_ids }) =>
-  //   //     genre_ids.filter(id => Number(id) === Number(genreId)).length > 0
-  //   // );
-
-  //   // return callback(_movies, genres);
-  // }
+  return callback(movies, genres);
 };
 
 const helper_listOfActualGenresExtractedFromMovies = (
@@ -206,12 +175,11 @@ const helper_listOfActualGenresExtractedFromMovies = (
 };
 
 const mapStateToProps = state => {
-  const { movies, genres, genreId, vouteValue } = state.appData;
-  console.log(genreId);
+  const { movies, genres, genreId, genreIds, vouteValue } = state.appData;
 
   return {
     movies: helper_filterByGenres(
-      { movies, genres, genreId, vouteValue },
+      { movies, genres, genreId, genreIds, vouteValue },
       helper_mapGenresArray
     ),
     genres: helper_listOfActualGenresExtractedFromMovies(movies, genres)

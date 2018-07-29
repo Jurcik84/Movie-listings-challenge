@@ -11,7 +11,8 @@ const initialState = {
   dataFetched: false,
   isFetching: false,
   error: false,
-  genreId: [],
+  genreId: null,
+  genreIds: [],
   movies: [],
   genres: [],
   vouteValue: null
@@ -27,7 +28,6 @@ const dataReducer = (state = initialState, action) => {
       };
 
     case FETCHING_DATA_SUCCESS:
-      console.log("FETCHING_DATA_SUCCESS", action);
       const { movies, genres } = action;
       return {
         ...state,
@@ -46,7 +46,11 @@ const dataReducer = (state = initialState, action) => {
     case FILTER_MOVIES_BY_GENRES:
       return {
         ...state,
-        genreId: [...state.genreId, action.genreId]
+        genreIds: state.genreIds.includes(action.genreId)
+          ? state.genreIds.filter(item => action.genreId !== item)
+          : state.genreIds.concat(action.genreId),
+
+        genreId: action.genreId
       };
 
     case FILTER_MOVIES_BY_VOTE:
