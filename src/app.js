@@ -139,8 +139,25 @@ const helper_filterByGenres = (
   { movies, genres, genreId, genreIds },
   callback
 ) => {
+  // console.log("genres", genres);
   if (genreIds.length > 0) {
-    return helper_filterMoviesByGenreIdFromForm(movies, genreIds);
+    const data = helper_filterMoviesByGenreIdFromForm(movies, genreIds);
+    const arr_allGenresWithNameAndId = helper_listOfActualGenresExtractedFromMovies(
+      movies,
+      genres
+    );
+    return data.map((item, index) => {
+      return {
+        ...item,
+        genre_ids: arr_allGenresWithNameAndId.filter(({ name, id }) => {
+          return (
+            item.genre_ids.filter(genreId => {
+              return genreId === id;
+            }).length > 0
+          );
+        })
+      };
+    });
   }
 
   return callback(movies, genres);
