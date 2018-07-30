@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { fetchData } from "./actions";
 // import styled components
 import {
-  Wrapper,
+  Row,
   Title,
   ListView,
   ListViewItem,
@@ -12,9 +12,11 @@ import {
   GenresWrapper,
   Genre,
   PosterImage,
-  HeaderView,
+  SideBarView,
   FooterView,
-  H3
+  H3,
+  StatisticDataPanel,
+  MainContentView
 } from "./styled-components";
 
 // c
@@ -28,45 +30,51 @@ class App extends Component {
   renderMovies = movies => {
     if (movies.length === 0) {
       return (
-        <Wrapper>
-          <HeaderView>
-            <RenderFilterComponent />
-          </HeaderView>
-          <ListView>
-            <H3>NO Result</H3>
-          </ListView>
-        </Wrapper>
+        <MainContentView>
+          <StatisticDataPanel>{""}</StatisticDataPanel>
+          <Row>
+            <SideBarView>
+              <RenderFilterComponent />
+            </SideBarView>
+            <ListView>
+              <H3>NO Result</H3>
+            </ListView>
+          </Row>
+        </MainContentView>
       );
     } else {
       return (
-        <Wrapper>
-          <HeaderView>
-            <RenderFilterComponent />
-          </HeaderView>
-          <ListView>
-            {movies.map((movieItem, movieIndex) => (
-              <ListViewItem key={movieIndex.toString()}>
-                <PosterImage
-                  src={
-                    "https://image.tmdb.org/t/p/w300/" + movieItem.poster_path
-                  }
-                  alt={movieItem.original_title}
-                />
-                <small>{movieItem.vote_average}</small>
-                <TitleWrapper>
-                  <Title>{movieItem.original_title}</Title>
-                </TitleWrapper>
+        <MainContentView>
+          <StatisticDataPanel>{""}</StatisticDataPanel>
+          <Row>
+            <SideBarView>
+              <RenderFilterComponent />
+            </SideBarView>
+            <ListView>
+              {movies.map((movieItem, movieIndex) => (
+                <ListViewItem key={movieIndex.toString()}>
+                  <PosterImage
+                    src={
+                      "https://image.tmdb.org/t/p/w300/" + movieItem.poster_path
+                    }
+                    alt={movieItem.original_title}
+                  />
+                  <small>{movieItem.vote_average}</small>
+                  <TitleWrapper>
+                    <Title>{movieItem.original_title}</Title>
+                  </TitleWrapper>
 
-                <GenresWrapper>
-                  {movieItem.genre_ids.map((gItem, gIndex) => (
-                    <Genre key={gIndex.toString()}>{gItem.name}</Genre>
-                  ))}
-                </GenresWrapper>
-              </ListViewItem>
-            ))}
-          </ListView>
-          <FooterView />
-        </Wrapper>
+                  <GenresWrapper>
+                    {movieItem.genre_ids.map((gItem, gIndex) => (
+                      <Genre key={gIndex.toString()}>{gItem.name}</Genre>
+                    ))}
+                  </GenresWrapper>
+                </ListViewItem>
+              ))}
+            </ListView>
+            <FooterView />
+          </Row>
+        </MainContentView>
       );
     }
   };
@@ -75,15 +83,14 @@ class App extends Component {
 
   render() {
     const { movies, dataFetched, isFetching, error } = this.props;
-
     if (dataFetched && movies) {
       return this.renderMovies(movies);
     } else if (error) {
-      return <Wrapper>ERROR AQUIRED</Wrapper>;
+      return <Row>ERROR AQUIRED</Row>;
     } else if (isFetching) {
       return this.renderLoader();
     } else {
-      return <Wrapper>ERROR AQUIRED</Wrapper>;
+      return <Row>ERROR AQUIRED</Row>;
     }
   }
 }

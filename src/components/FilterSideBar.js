@@ -1,29 +1,34 @@
 import React from "react";
-import { fetchData, filterMovieByGenre, filterMoviesByVote } from "../actions";
+import { filterMovieByGenre, filterMoviesByVote } from "../actions";
 import { connect } from "react-redux";
-import { CheckboxLabel, H3, CheckboxView } from "../styled-components";
+import {
+  CheckboxLabel,
+  H3,
+  CheckBoxInput,
+  RangeInput,
+  Divider
+} from "../styled-components";
 
 const RenderFilterComponent = props => {
   const { genres, filterMovieByGenre, filterMoviesByVote, vouteValue } = props;
 
   return (
     <React.Fragment>
-      <div>
-        <input
-          onChange={e => filterMoviesByVote(Number(e.target.value))}
-          type="range"
-          step="0.5"
-          min="0"
-          max="10"
-          defaultValue={3}
-        />
-        <div>{vouteValue === null ? 3 : vouteValue}</div>
-      </div>
+      <RangeInput
+        onChange={e => filterMoviesByVote(Number(e.target.value))}
+        type="range"
+        step="0.5"
+        min="0"
+        max="10"
+        defaultValue={3}
+      />
+      <div>{vouteValue === null ? 3 : vouteValue}</div>
+      <Divider />
       {genres.map(({ name, id }, index) => {
         return (
           <CheckboxLabel key={index.toString()}>
             <H3> {name}</H3>
-            <CheckboxView
+            <CheckBoxInput
               defaultChecked={false}
               name={name}
               id={id}

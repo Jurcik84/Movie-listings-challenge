@@ -1,18 +1,15 @@
 // styled
 import styled from "styled-components";
 
-export const H3 = styled.h3`
+export const H3 = styled.h3``;
 
-`;
-
-export const Wrapper = styled.section`
- display: flex;
- flex-direction: row;
- min-height: 100%;
- height: auto;
- max-width: 1200px;
- border:1px solid #ccc;
- margin: 0 auto;
+export const Row = styled.section`
+  display: flex;
+  flex-direction: row;
+  min-height: 100%;
+  height: auto;
+  max-width: 1200px;
+  margin: 0 auto;
 `;
 
 export const Title = styled.h2`
@@ -22,7 +19,6 @@ export const Title = styled.h2`
 `;
 
 export const ListView = styled.ul`
-  
   display: flex;
   flex-wrap: wrap;
   list-style-type: none;
@@ -59,14 +55,11 @@ export const PosterImage = styled.img`
   width: 300px;
 `;
 
-export const HeaderView = styled.header`
- 
-  display: flex;
-  flex-direction: column;
-  background-color: #000;
+export const SideBarView = styled.header`
+  background-color: #f1f1f1;
   margin-bottom: 20px;
   padding: 20px;
- 
+  color: #000;
 `;
 
 export const FooterView = styled.footer`
@@ -77,19 +70,37 @@ export const FooterView = styled.footer`
 `;
 
 export const CheckboxLabel = styled.label`
-  width: 120px;
   display: flex;
   justify-content: space-around;
-  color: white;
   font-size: 10px;
-  border: 1px solid white;
+
   padding: 2px 8px;
-  margin-bottom:12px;
+  margin-bottom: 12px;
   border-radius: 2px;
   display: flex;
   align-items: center;
 `;
 
-export const CheckboxView = styled.input`
+export const CheckBoxInput = styled.input``;
 
+export const RangeInput = styled.input``;
+
+export const Divider = styled.hr`
+  display: block;
+  height: 0;
+  background-color: #ccc;
+  padding-bottom: 1px;
+`;
+
+export const StatisticDataPanel = styled.section`
+  min-height: 98px;
+  background-color: #f1f1f1;
+  margin-bottom: 20px;
+  padding: 20px;
+`;
+
+export const MainContentView = styled.section`
+  min-height: 98px;
+  max-width: 1200px;
+  margin: 0 auto;
 `;
