@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 // ACTION CREATORS
-import { fetchData, filterMovieByGenre } from "./actions";
+import { fetchData } from "./actions";
 // import styled components
 import {
   Wrapper,
@@ -14,74 +14,80 @@ import {
   PosterImage,
   HeaderView,
   FooterView,
-  FormView
+  H3
 } from "./styled-components";
 
+// c
+import RenderFilterComponent from "./components/FilterSideBar";
+
 class App extends Component {
-  state = {};
+  state = {
+    rangeValue: 3
+  };
   componentDidMount() {
     this.props.fetchData();
   }
 
-  renderFilterComponent = () => {
-    const { genres, filterMovieByGenre } = this.props;
-
-    return (
-      <FormView>
-        {genres.map(({ name, id }, index) => {
-          return (
-            <div key={index.toString()}>
-              <label>{name}</label>
-              <input
-                defaultChecked={false}
-                name={name}
-                id={id}
-                type="checkbox"
-                onChange={e => filterMovieByGenre(Number(e.target.id))}
-              />
-            </div>
-          );
-        })}
-      </FormView>
-    );
-  };
-
   renderMovies = movies => {
-    return (
-      <Wrapper>
-        <HeaderView>{this.renderFilterComponent()}</HeaderView>
-        <ListView>
-          {movies.map((movieItem, movieIndex) => (
-            <ListViewItem key={movieIndex.toString()}>
-              <PosterImage
-                src={"https://image.tmdb.org/t/p/w300/" + movieItem.poster_path}
-                alt={movieItem.original_title}
-              />
-              <TitleWrapper>
-                <Title>{movieItem.original_title}</Title>
-              </TitleWrapper>
+    if (movies.length === 0) {
+      return (
+        <Wrapper>
+          <HeaderView>
+            <RenderFilterComponent />
+          </HeaderView>
+          <ListView>
+            <H3>NO Result</H3>
+          </ListView>
+        </Wrapper>
+      );
+    } else {
+      return (
+        <Wrapper>
+          <HeaderView>
+            <RenderFilterComponent />
+          </HeaderView>
+          <ListView>
+            {movies.map((movieItem, movieIndex) => (
+              <ListViewItem key={movieIndex.toString()}>
+                <PosterImage
+                  src={
+                    "https://image.tmdb.org/t/p/w300/" + movieItem.poster_path
+                  }
+                  alt={movieItem.original_title}
+                />
+                <small>{movieItem.vote_average}</small>
+                <TitleWrapper>
+                  <Title>{movieItem.original_title}</Title>
+                </TitleWrapper>
 
-              <GenresWrapper>
-                {movieItem.genre_ids.map((gItem, gIndex) => (
-                  <Genre key={gIndex.toString()}>{gItem.name}</Genre>
-                ))}
-              </GenresWrapper>
-            </ListViewItem>
-          ))}
-        </ListView>
-        <FooterView />
-      </Wrapper>
-    );
+                <GenresWrapper>
+                  {movieItem.genre_ids.map((gItem, gIndex) => (
+                    <Genre key={gIndex.toString()}>{gItem.name}</Genre>
+                  ))}
+                </GenresWrapper>
+              </ListViewItem>
+            ))}
+          </ListView>
+          <FooterView />
+        </Wrapper>
+      );
+    }
   };
 
-  renderLoader = () => <div>a</div>;
+  renderLoader = () => <div>Loading ...</div>;
 
   render() {
-    const { movies } = this.props;
-    if (movies) {
+    const { movies, dataFetched, isFetching, error } = this.props;
+    console.log(this.props);
+
+    if (dataFetched && movies) {
       return this.renderMovies(movies);
-    } else {
+    } else if (error) {
+      return <Wrapper>ERROR AQUIRED</Wrapper>;
+    } else if (isFetching) {
       return this.renderLoader();
+    } else {
+      return <Wrapper>ERROR AQUIRED</Wrapper>;
     }
   }
 }
@@ -92,10 +98,6 @@ const helper2 = ({ genre_ids }, arr_genres) => {
   });
 };
 
-const helper_sortMoviesByPopularity = arr_movies => {
-  return [...arr_movies].sort((a, b) => b.popularity - a.popularity);
-};
-
 const helper_mapGenresArray = (arr_movies, arr_genres) => {
   switch (true) {
     case arr_movies && arr_movies.length > 0:
@@ -103,7 +105,7 @@ const helper_mapGenresArray = (arr_movies, arr_genres) => {
         ...movieItem,
         genre_ids: helper2(movieItem, arr_genres)
       }));
-      return helper_sortMoviesByPopularity(ARR_MOVIES);
+      return ARR_MOVIES;
     default:
       return [];
   }
@@ -114,17 +116,10 @@ const helper_filterMoviesByGenreIdFromForm = (
   arr_genresIdsFromForm
 ) => {
   const data = arr_all_moviesWithGenresIDsAndNames.filter(({ genre_ids }) => {
-    // console.log("genre_ids", genre_ids);
     return (
       genre_ids.filter(num_genreIdFromMovies => {
-        // console.log("num_genreIdFromForm", num_genreIdFromForm);
         return (
           arr_genresIdsFromForm.filter(num_genreIDsFromForm => {
-            // console.log(
-            //   "num_genreIdFromMovies === num_genreIDsFromForm",
-            //   num_genreIdFromMovies,
-            //   num_genreIDsFromForm
-            // );
             return num_genreIdFromMovies === num_genreIDsFromForm;
           }).length > 0
         );
@@ -133,34 +128,6 @@ const helper_filterMoviesByGenreIdFromForm = (
   });
 
   return data;
-};
-
-const helper_filterByGenres = (
-  { movies, genres, genreId, genreIds },
-  callback
-) => {
-  // console.log("genres", genres);
-  if (genreIds.length > 0) {
-    const data = helper_filterMoviesByGenreIdFromForm(movies, genreIds);
-    const arr_allGenresWithNameAndId = helper_listOfActualGenresExtractedFromMovies(
-      movies,
-      genres
-    );
-    return data.map((item, index) => {
-      return {
-        ...item,
-        genre_ids: arr_allGenresWithNameAndId.filter(({ name, id }) => {
-          return (
-            item.genre_ids.filter(genreId => {
-              return genreId === id;
-            }).length > 0
-          );
-        })
-      };
-    });
-  }
-
-  return callback(movies, genres);
 };
 
 const helper_listOfActualGenresExtractedFromMovies = (
@@ -191,22 +158,67 @@ const helper_listOfActualGenresExtractedFromMovies = (
   return arr_allGenresWithNameAndIDs;
 };
 
+const helper_filterByGenres = (
+  { movies, genres, genreId, genreIds, vouteValue },
+  callback
+) => {
+  const data = helper_filterMoviesByGenreIdFromForm(movies, genreIds);
+  const arr_allGenresWithNameAndId = helper_listOfActualGenresExtractedFromMovies(
+    movies,
+    genres
+  );
+
+  if (genreIds.length > 0) {
+    return data
+      .map((item, index) => {
+        return {
+          ...item,
+          genre_ids: arr_allGenresWithNameAndId.filter(({ name, id }) => {
+            return (
+              item.genre_ids.filter(genreId => {
+                return genreId === id;
+              }).length > 0
+            );
+          })
+        };
+      })
+      .filter(({ vote_average }) => vote_average >= vouteValue);
+  } else {
+    return callback(movies, genres).filter(
+      ({ vote_average }) => vote_average >= vouteValue
+    );
+  }
+};
+
 const mapStateToProps = state => {
-  const { movies, genres, genreId, genreIds, vouteValue } = state.appData;
+  const {
+    movies,
+    genres,
+    genreId,
+    genreIds,
+    vouteValue,
+    dataFetched,
+    isFetching,
+    error
+  } = state.appData;
+
+  console.log("all movies :", movies);
 
   return {
+    dataFetched,
+    isFetching,
+    error,
+    vouteValue,
     movies: helper_filterByGenres(
       { movies, genres, genreId, genreIds, vouteValue },
       helper_mapGenresArray
-    ),
-    genres: helper_listOfActualGenresExtractedFromMovies(movies, genres)
+    )
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
-    fetchData: () => dispatch(fetchData()),
-    filterMovieByGenre: value => dispatch(filterMovieByGenre(value))
+    fetchData: () => dispatch(fetchData())
   };
 };
 

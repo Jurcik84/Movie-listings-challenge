@@ -5,7 +5,7 @@ import {
 
   // FILTER
   FILTER_MOVIES_BY_GENRES,
-  FILTER_MOVIES_BY_VOTE
+  FILTER_MOVIES_BY_POPULARITY
 } from "./constants";
 
 export const getData = () => ({
@@ -28,7 +28,7 @@ export const filterMovieByGenre = genreId => ({
 });
 
 export const filterMoviesByVote = vouteValue => ({
-  type: "FILTER_MOVIES_BY_VOTE",
+  type: FILTER_MOVIES_BY_POPULARITY,
   vouteValue
 });
 

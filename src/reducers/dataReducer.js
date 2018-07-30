@@ -3,11 +3,10 @@ import {
   FETCHING_DATA_SUCCESS,
   FETCHING_DATA_FAILURE,
   FILTER_MOVIES_BY_GENRES,
-  FILTER_MOVIES_BY_VOTE
+  FILTER_MOVIES_BY_POPULARITY
 } from "../constants";
 
 const initialState = {
-  data: {},
   dataFetched: false,
   isFetching: false,
   error: false,
@@ -18,12 +17,48 @@ const initialState = {
   vouteValue: null
 };
 
+const mapMoviesWithGenreIdsAndNames = (movies, genres) => {
+  const _sortedMovies = [...movies].sort((a, b) => b.popularity - a.popularity);
+
+  return _sortedMovies;
+};
+
+const filterMoviesByGenresHelper = (state, action) => {
+  switch (action.type) {
+    case FILTER_MOVIES_BY_GENRES:
+      return {
+        ...state,
+        genreIds: state.genreIds.includes(action.genreId)
+          ? state.genreIds.filter(item => action.genreId !== item)
+          : state.genreIds.concat(action.genreId),
+
+        genreId: action.genreId
+      };
+
+    default:
+      return state;
+  }
+};
+
+const filterMoviesByPopularity = (state, action) => {
+  switch (action.type) {
+    case FILTER_MOVIES_BY_POPULARITY:
+      return {
+        ...state,
+        vouteValue: action.vouteValue
+      };
+
+    default:
+      return state;
+  }
+};
+
 const dataReducer = (state = initialState, action) => {
   switch (action.type) {
     case FETCHING_DATA:
       return {
         ...state,
-        data: {},
+
         isFetching: true
       };
 
@@ -32,7 +67,8 @@ const dataReducer = (state = initialState, action) => {
       return {
         ...state,
         isFetching: false,
-        movies: movies,
+        dataFetched: true,
+        movies: mapMoviesWithGenreIdsAndNames(movies, genres),
         genres: genres
       };
 
@@ -44,20 +80,10 @@ const dataReducer = (state = initialState, action) => {
       };
 
     case FILTER_MOVIES_BY_GENRES:
-      return {
-        ...state,
-        genreIds: state.genreIds.includes(action.genreId)
-          ? state.genreIds.filter(item => action.genreId !== item)
-          : state.genreIds.concat(action.genreId),
+      return filterMoviesByGenresHelper(state, action);
 
-        genreId: action.genreId
-      };
-
-    case FILTER_MOVIES_BY_VOTE:
-      return {
-        ...state,
-        vouteValue: action.vouteValue
-      };
+    case FILTER_MOVIES_BY_POPULARITY:
+      return filterMoviesByPopularity(state, action);
 
     default:
       return state;
