@@ -3,6 +3,8 @@ import styled from "styled-components";
 
 export const H3 = styled.h3``;
 
+export const H5 = styled.h5``;
+
 export const Row = styled.section`
   display: flex;
   flex-direction: row;
@@ -85,11 +87,10 @@ export const CheckBoxInput = styled.input``;
 
 export const RangeInput = styled.input``;
 
-export const Divider = styled.hr`
+export const Divider = styled.div`
   display: block;
-  height: 0;
+  height: 1px;
   background-color: #ccc;
-  padding-bottom: 1px;
 `;
 
 export const StatisticDataPanel = styled.section`
@@ -103,4 +104,9 @@ export const MainContentView = styled.section`
   min-height: 98px;
   max-width: 1200px;
   margin: 0 auto;
+`;
+
+export const SmallFont = styled.small`
+  font-size: 8px;
+  display: block;
 `;

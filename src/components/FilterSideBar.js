@@ -6,7 +6,9 @@ import {
   H3,
   CheckBoxInput,
   RangeInput,
-  Divider
+  Divider,
+  H5,
+  SmallFont
 } from "../styled-components";
 
 const RenderFilterComponent = props => {
@@ -14,6 +16,7 @@ const RenderFilterComponent = props => {
 
   return (
     <React.Fragment>
+      <H5>Filter By Popularity</H5>
       <RangeInput
         onChange={e => filterMoviesByVote(Number(e.target.value))}
         type="range"
@@ -22,7 +25,9 @@ const RenderFilterComponent = props => {
         max="10"
         defaultValue={3}
       />
-      <div>{vouteValue === null ? 3 : vouteValue}</div>
+      <SmallFont>popularity : {vouteValue === null ? 3 : vouteValue}</SmallFont>
+
+      <H5>Filter By Genres</H5>
       <Divider />
       {genres.map(({ name, id }, index) => {
         return (
