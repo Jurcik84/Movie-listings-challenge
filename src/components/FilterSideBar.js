@@ -37,61 +37,14 @@ const RenderFilterComponent = props => {
   );
 };
 
-const helper2 = ({ genre_ids }, arr_genres) => {
-  return genre_ids.map(genreId => {
-    return arr_genres.filter(gItem => genreId === gItem.id)[0];
-  });
-};
-
-const helper_mapGenresArray = (arr_movies, arr_genres) => {
-  switch (true) {
-    case arr_movies && arr_movies.length > 0:
-      const ARR_MOVIES = arr_movies.map(movieItem => ({
-        ...movieItem,
-        genre_ids: helper2(movieItem, arr_genres)
-      }));
-      return ARR_MOVIES;
-    default:
-      return [];
-  }
-};
-
-const helper_listOfActualGenresExtractedFromMovies = (
-  arr_all_loaded_movies,
-  arr_all_loaded_genres
-) => {
-  const arr_moviesWithGenresIDSandNames = helper_mapGenresArray(
-    arr_all_loaded_movies,
-    arr_all_loaded_genres
-  );
-  const arr_allGenresObjectExtractedFromMovies = arr_moviesWithGenresIDSandNames.reduce(
-    (accum, { genre_ids }) => accum.concat(genre_ids),
-    []
-  );
-  // MAP object into aray od ids
-  const arr_allGenresIDsFromMovies = arr_allGenresObjectExtractedFromMovies.map(
-    ({ id }) => id
-  );
-  // REMOE DUPLICITY
-  const arr_AllGenresIDsNoDuplicity = [...new Set(arr_allGenresIDsFromMovies)];
-  const arr_allGenresWithNameAndIDs = arr_AllGenresIDsNoDuplicity.map(
-    num_genreId =>
-      arr_allGenresObjectExtractedFromMovies.filter(
-        ({ id }) => num_genreId === id
-      )[0]
-  );
-
-  return arr_allGenresWithNameAndIDs;
-};
-
 const mapStateToProps = state => {
-  const { movies, genres, vouteValue } = state.appData;
+  const { genres, vouteValue } = state.appData;
 
   //  genres, filterMovieByGenre, filterMoviesByVote, vouteValue
 
   return {
     vouteValue,
-    genres: helper_listOfActualGenresExtractedFromMovies(movies, genres)
+    genres
   };
 };
 

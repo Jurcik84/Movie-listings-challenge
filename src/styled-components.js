@@ -78,7 +78,8 @@ export const FooterView = styled.footer`
 
 export const CheckboxLabel = styled.label`
   width: 120px;
-  display: block;
+  display: flex;
+  justify-content: space-around;
   color: white;
   font-size: 10px;
   border: 1px solid white;
