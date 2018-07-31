@@ -63,6 +63,7 @@ const filterMoviesByGenresHelper = (state, action) => {
     case FILTER_MOVIES_BY_GENRES:
       return {
         ...state,
+        // add genreId into array it doesnt exist or remove id if exist
         genreIds: state.genreIds.includes(action.genreId)
           ? state.genreIds.filter(item => action.genreId !== item)
           : state.genreIds.concat(action.genreId),

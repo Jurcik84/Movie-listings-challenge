@@ -33,7 +33,7 @@ export const filterMoviesByVote = vouteValue => ({
 });
 
 // AJAX API > SHOUL BE STORED IN DEFF FOLDER BUT FOR NO IT"S OK HAVE IT HERE
-const fetchMovieInParallel = async () => {
+const fetchMoviesInParallel = async () => {
   const response = await fetch(
     "https://api.themoviedb.org/3/movie/now_playing?api_key=67ff8239b8155c67a9a48930ed9f4e13&language=en-US&page=1"
   );
@@ -53,7 +53,7 @@ export const fetchData = () => {
     try {
       const [genres, movies] = await Promise.all([
         fetchGenresInParallel(),
-        fetchMovieInParallel()
+        fetchMoviesInParallel()
       ]);
       dispatch(getDataSuccess(genres, movies));
     } catch (error) {
