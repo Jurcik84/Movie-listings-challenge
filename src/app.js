@@ -59,7 +59,7 @@ class App extends Component {
                     }
                     alt={movieItem.original_title}
                   />
-                  <small>{movieItem.vote_average}</small>
+                  <TitleWrapper>{movieItem.vote_average}</TitleWrapper>
                   <TitleWrapper>
                     <Title>{movieItem.original_title}</Title>
                   </TitleWrapper>

@@ -19,13 +19,15 @@ const initialState = {
 
 const mapMoviesWithGenreIdsAndNames = (movies, genres) => {
   // SORTED BY POPULARITY
-  const _sortedMovies = [...movies].sort((a, b) => b.popularity - a.popularity);
+  const _sortedMovies = [...movies].sort(
+    (a, b) => Number(b.popularity) - Number(a.popularity)
+  );
 
   // REMOVE GENRES FROM LOADED GENRES THAT ARE NOT IN MOVIE ARRAY
   const _arr_onlyGenresInMovies = genres.reduce((accum, next) => {
     movies.forEach(({ genre_ids }) => {
       genre_ids.forEach(id => {
-        if (id === next.id) {
+        if (Number(id) === Number(next.id)) {
           accum.push(next);
         }
       });
