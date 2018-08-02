@@ -18,9 +18,10 @@ const initialState = {
 };
 
 const mapMoviesWithGenreIdsAndNames = (movies, genres) => {
+  console.log(movies);
   // SORTED BY POPULARITY
   const _sortedMovies = [...movies].sort(
-    (a, b) => Number(b.popularity) - Number(a.popularity)
+    (a, b) => Number(b.vote_average) - Number(a.vote_average)
   );
 
   // REMOVE GENRES FROM LOADED GENRES THAT ARE NOT IN MOVIE ARRAY
