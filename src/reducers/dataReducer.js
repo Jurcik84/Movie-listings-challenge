@@ -17,13 +17,7 @@ const initialState = {
   vouteValue: null
 };
 
-const mapMoviesWithGenreIdsAndNames = (movies, genres) => {
-  console.log(movies);
-  // SORTED BY POPULARITY
-  const _sortedMovies = [...movies].sort(
-    (a, b) => Number(b.vote_average) - Number(a.vote_average)
-  );
-
+const selectorGetAllGenresThatExistInMovies = (movies, genres) => {
   // REMOVE GENRES FROM LOADED GENRES THAT ARE NOT IN MOVIE ARRAY
   const _arr_onlyGenresInMovies = genres.reduce((accum, next) => {
     movies.forEach(({ genre_ids }) => {
@@ -41,6 +35,22 @@ const mapMoviesWithGenreIdsAndNames = (movies, genres) => {
     });
   }, []);
 
+  return _arr_onlyGenresInMovies;
+};
+
+const mapMoviesWithGenreIdsAndNames = (movies, genres) => {
+  console.log(movies);
+  // SORTED BY POPULARITY
+  const _sortedMovies = [...movies].sort(
+    (a, b) => Number(b.vote_average) - Number(a.vote_average)
+  );
+
+  const _arr_onlyGenresInMovies = selectorGetAllGenresThatExistInMovies(
+    movies,
+    genres
+  );
+  // // REMOVE GENRES FROM LOADED GENRES THAT ARE NOT IN MOVIE ARRAY
+
   // MAP MOVIE ARRAY TO REPLACE IT GENRE IDs WITH OBJECTS CONT. ID AND NAME
   const _arr_allMoviesWitGenresIdAndNames = _sortedMovies.map((item, index) => {
     return {
@@ -55,10 +65,7 @@ const mapMoviesWithGenreIdsAndNames = (movies, genres) => {
     };
   });
 
-  return {
-    genres: _arr_onlyGenresInMovies,
-    movies: _arr_allMoviesWitGenresIdAndNames
-  };
+  return _arr_allMoviesWitGenresIdAndNames;
 };
 
 const filterMoviesByGenresHelper = (state, action) => {
@@ -107,8 +114,11 @@ const dataReducer = (state = initialState, action) => {
         ...state,
         isFetching: false,
         dataFetched: true,
-        movies: mapMoviesWithGenreIdsAndNames(movies, genres).movies,
-        genres: mapMoviesWithGenreIdsAndNames(movies, genres).genres
+
+        //
+        movies: mapMoviesWithGenreIdsAndNames(movies, genres),
+        //
+        genres: selectorGetAllGenresThatExistInMovies(movies, genres)
       };
 
     case FETCHING_DATA_FAILURE:
