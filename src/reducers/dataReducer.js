@@ -17,37 +17,46 @@ const initialState = {
   vouteValue: null
 };
 
-const selectorGetAllGenresThatExistInMovies = (movies, genres) => {
+// THe data source for genres provide all genres
+// even thouse that not exist in actual movie data model / array
+// here I use reduce becasue it allows filtering and mapping
+const selectorGetAllGenresThatExistInMovies = (
+  list_movies = [],
+  list_genres = []
+) => {
   // REMOVE GENRES FROM LOADED GENRES THAT ARE NOT IN MOVIE ARRAY
-  const _arr_onlyGenresInMovies = genres.reduce((accum, next) => {
-    movies.forEach(({ genre_ids }) => {
-      genre_ids.forEach(id => {
-        if (Number(id) === Number(next.id)) {
-          accum.push(next);
-        }
+  const _arr_onlyGenresInMovies = list_genres.reduce(
+    (list_accum, genreItem) => {
+      list_movies.forEach(({ genre_ids }) => {
+        genre_ids.forEach(id => {
+          if (Number(id) === Number(genreItem.id)) {
+            list_accum.push(genreItem);
+          }
+        });
       });
-    });
 
-    // REMOVING DUPLICITY FROM ARRAY
-    return accum.filter((ob_genre, index, arr) => {
-      const c = arr.map(item => item.id);
-      return index === c.indexOf(ob_genre.id);
-    });
-  }, []);
+      // REMOVING DUPLICITY FROM ARRAY
+      return list_accum.filter((ob_genre, index, list_self) => {
+        const c = list_self.map(item => item.id);
+        return index === c.indexOf(ob_genre.id);
+      });
+    },
+    []
+  );
 
   return _arr_onlyGenresInMovies;
 };
 
-const mapMoviesWithGenreIdsAndNames = (movies, genres) => {
-  console.log(movies);
+const mapMoviesWithGenreIdsAndNames = (list_movies = [], list_genres = []) => {
+  console.log(list_movies);
   // SORTED BY POPULARITY
-  const _sortedMovies = [...movies].sort(
+  const _sortedMovies = [...list_movies].sort(
     (a, b) => Number(b.vote_average) - Number(a.vote_average)
   );
 
   const _arr_onlyGenresInMovies = selectorGetAllGenresThatExistInMovies(
-    movies,
-    genres
+    (list_movies = []),
+    (list_genres = [])
   );
   // // REMOVE GENRES FROM LOADED GENRES THAT ARE NOT IN MOVIE ARRAY
 
@@ -68,7 +77,7 @@ const mapMoviesWithGenreIdsAndNames = (movies, genres) => {
   return _arr_allMoviesWitGenresIdAndNames;
 };
 
-const filterMoviesByGenresHelper = (state, action) => {
+const filterMoviesByGenresHelper = (state = {}, action = {}) => {
   switch (action.type) {
     case FILTER_MOVIES_BY_GENRES:
       return {
@@ -86,7 +95,7 @@ const filterMoviesByGenresHelper = (state, action) => {
   }
 };
 
-const filterMoviesByPopularity = (state, action) => {
+const filterMoviesByPopularity = (state = {}, action = {}) => {
   switch (action.type) {
     case FILTER_MOVIES_BY_POPULARITY:
       return {
@@ -99,12 +108,11 @@ const filterMoviesByPopularity = (state, action) => {
   }
 };
 
-const dataReducer = (state = initialState, action) => {
+const dataReducer = (state = initialState, action = {}) => {
   switch (action.type) {
     case FETCHING_DATA:
       return {
         ...state,
-
         isFetching: true
       };
 
